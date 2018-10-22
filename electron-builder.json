@@ -1,0 +1,30 @@
+{
+  "appId": "com.mhq.arztcloud.desktopclient",
+  "generateUpdatesFilesForAllChannels": true,
+  "mac": {
+    "category": "public.app-category.productivity",
+    "target": [
+      "zip",
+      "dmg"
+    ]
+  },
+  "win": {
+    "target": [
+      {
+        "target": "nsis",
+        "arch": [
+          "x64",
+          "ia32"
+        ]
+      }
+    ]
+  },
+  "nsis": {
+    "oneClick": false,
+    "packElevateHelper": true,
+    "perMachine": true,
+    "guid": true,
+    "createDesktopShortcut": true,
+    "createStartMenuShortcut": true
+  }
+}
