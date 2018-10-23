@@ -1,5 +1,7 @@
 const {BrowserWindow, dialog} = require('electron');
 
+let arztcloudRegEx = new RegExp('arztcloud\.com');
+
 function createMainWindow (title, baseUrl) {
   let mainWindow = new BrowserWindow({
     title: title,
@@ -30,7 +32,11 @@ function createMainWindow (title, baseUrl) {
 
   mainWindow.webContents.on('new-window', function(e, url) {
     e.preventDefault();
-    let win = new BrowserWindow();
+    let win = new BrowserWindow({
+      webPreferences: {
+        nodeIntegration: arztcloudRegEx.test(url)
+      }
+    });
     let offset = 50;
     let parentPosition = mainWindow.getPosition();
     win.setPosition(parentPosition[0] + offset, parentPosition[1] + offset);
