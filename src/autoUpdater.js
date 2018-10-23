@@ -25,8 +25,4 @@ autoUpdater.on('update-downloaded', (info) => {
   );
 });
 
-app.on('ready', function()  {
-  autoUpdater.checkForUpdatesAndNotify();
-});
-
 module.exports.autoUpdater = autoUpdater;
