@@ -5,6 +5,8 @@ const log = require('electron-log');
 autoUpdater.logger = log;
 autoUpdater.logger.transports.file.level = 'info';
 
+autoUpdater.autoInstallOnAppQuit = false;
+
 autoUpdater.on('error', (err) => {
   log.info('Error in auto-updater. ' + err);
 });
@@ -23,10 +25,6 @@ autoUpdater.on('update-downloaded', (info) => {
       }
     }
   );
-});
-
-app.on('ready', function()  {
-  autoUpdater.checkForUpdatesAndNotify();
 });
 
 module.exports.autoUpdater = autoUpdater;

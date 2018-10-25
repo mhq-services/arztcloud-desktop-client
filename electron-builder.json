@@ -1,6 +1,11 @@
 {
   "appId": "com.mhq.arztcloud.desktopclient",
   "generateUpdatesFilesForAllChannels": true,
+  "publish": [
+    {
+      "provider": "github"
+    }
+  ],
   "mac": {
     "category": "public.app-category.productivity",
     "target": [

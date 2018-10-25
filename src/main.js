@@ -6,10 +6,13 @@ const {createMainWindow} = require('./mainWindow');
 
 require('./contextMenu');
 
+let mainWindow;
+
 app.on('ready', function() {
   // make sure the data is cleared in case the app wasn't quit properly last time
   session.defaultSession.clearStorageData();
-	createMainWindow(webApp.title, webApp.baseUrl);
+	mainWindow = createMainWindow(webApp.title, webApp.baseUrl, webApp.exitUrl);
+  autoUpdater.checkForUpdatesAndNotify();
 });
 
 app.on('window-all-closed', () => {
