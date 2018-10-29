@@ -13,18 +13,17 @@ autoUpdater.on('error', (err) => {
 
 autoUpdater.on('update-downloaded', (info) => {
   log.info('Update downloaded');
-  dialog.showMessageBox({
-      type: 'info',
-      title: 'Updates sind bereit.',
-      message: 'Möchtest du die Updates jetzt installieren?',
-      buttons: ['Ja', 'Nein']
-    }, (buttonIndex) => {
-      if (buttonIndex === 0) {
-      	app.removeAllListeners('window-all-closed');
-        autoUpdater.quitAndInstall();
-      }
-    }
-  );
+  let result = dialog.showMessageBox({
+    type: 'question',
+    title: 'Updates sind bereit.',
+    message: 'Möchtest du die Updates jetzt installieren?',
+    buttons: ['Ja', 'Nein']
+  });
+
+  if (result === 0) {
+    app.removeAllListeners('window-all-closed');
+    autoUpdater.quitAndInstall();
+  }
 });
 
 module.exports.autoUpdater = autoUpdater;

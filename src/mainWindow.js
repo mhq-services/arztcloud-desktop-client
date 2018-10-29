@@ -141,32 +141,31 @@ function promoteToMainWindow(window) {
  */
 function addCloseConfirmationHandler(window) {
   window.on('close', function (event) {
-    dialog.showMessageBox({
-        type: 'info',
-        title: 'Beenden',
-        message: 'Möchtest du den arztcloud Desktop Client wirklich beenden?',
-        buttons: ['Ja', 'Nein']
-      }, (buttonIndex) => {
-        if (buttonIndex === 1) {
-        	event.preventDefault();
-          event.returnValue = false;
-        } else {
-          // @TODO REFAC
-          let openIdsWithoutCurrent = openWindowIds;
-          let currentWindowIndex = openIdsWithoutCurrent.indexOf(window.id);
-          openIdsWithoutCurrent.splice(currentWindowIndex, 1);
+    let result = dialog.showMessageBox({
+      type: 'question',
+      title: 'Beenden',
+      message: 'Möchtest du den arztcloud Desktop Client wirklich beenden?',
+      buttons: ['Ja', 'Nein']
+    });
 
-          openIdsWithoutCurrent.forEach(function (windowId) {
-            let openWindow = BrowserWindow.fromId(windowId);
-            if (openWindow) {
-              openWindow.destroy();
-            }
-          });
-          openWindowIds = [];
-          openWindowIds.push(window.id);
+    if (result === 1) {
+      event.preventDefault();
+      event.returnValue = false;
+    } else {
+      // @TODO REFAC
+      let openIdsWithoutCurrent = openWindowIds;
+      let currentWindowIndex = openIdsWithoutCurrent.indexOf(window.id);
+      openIdsWithoutCurrent.splice(currentWindowIndex, 1);
+
+      openIdsWithoutCurrent.forEach(function (windowId) {
+        let openWindow = BrowserWindow.fromId(windowId);
+        if (openWindow) {
+          openWindow.destroy();
         }
-      }
-    );
+      });
+      openWindowIds = [];
+      openWindowIds.push(window.id);
+    }
   });
 }
 
