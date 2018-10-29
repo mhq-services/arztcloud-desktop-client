@@ -11,6 +11,23 @@ autoUpdater.on('error', (err) => {
   log.info('Error in auto-updater. ' + err);
 });
 
+if (process.platform === 'darwin') {
+  autoUpdater.on('update-available', (event, releaseNotes, releaseName, releaseDate, updateUrl) => {
+    let result = dialog.showMessageBox({
+      type: 'info',
+      title: 'Neue Updates verfügbar.',
+      message: 'Downloadseite für aktuelle Version öffnen?',
+      buttons: ['Ja', 'Nein']
+    });
+    e.preventDefault();
+    // we currently don't support auto update for macOs so don't trigger any download
+    if (result === 0) {
+      require('electron').shell.openExternal(updateUrl);
+      app.quit();
+    }
+  });
+}
+
 autoUpdater.on('update-downloaded', (info) => {
   log.info('Update downloaded');
   let result = dialog.showMessageBox({
