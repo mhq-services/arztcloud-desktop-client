@@ -11,6 +11,8 @@ If the version name has a suffix e.g. "0.1.0-beta" it allows updates to pre-rele
 ## Development
 ### Create releases
 #### Preparation
+On macOs: Install [wine](https://www.winehq.org/) to be able to create Windows .exe files.
+
 Create a [personal access token](https://github.com/settings/tokens) with permissions for *repo* and *admin:org* (since the repository belongs to an organization).
 
 ```bash

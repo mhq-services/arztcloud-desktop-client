@@ -1,12 +1,14 @@
 {
   "name": "arztcloud-desktop-client",
   "productName": "arztcloud Desktop Client",
-  "version": "0.1.3",
+  "version": "0.1.4-develop",
   "main": "src/main.js",
   "description": "Desktop Client für arztcloud.com",
   "author": "MHQ - Services GmbH",
   "scripts": {
-    "publish": "rm -r dist/* && build --mac --win -p always"
+    "start": "node_modules/.bin/electron .",
+    "publish": "rm -r dist/* && build --mac --win -p always",
+    "build-mac": "build --mac"
   },
   "devDependencies": {
     "electron": "^3.0.2",
