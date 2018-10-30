@@ -1,7 +1,7 @@
 {
   "name": "arztcloud-desktop-client",
   "productName": "arztcloud Desktop Client",
-  "version": "0.1.5-develop",
+  "version": "0.1.5",
   "main": "src/main.js",
   "description": "Desktop Client für arztcloud.com",
   "author": "MHQ - Services GmbH",
