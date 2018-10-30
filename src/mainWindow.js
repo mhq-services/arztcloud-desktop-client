@@ -2,7 +2,6 @@ const {BrowserWindow, dialog, session, app} = require('electron');
 
 let openWindowIds = [];
 let offset = 50;
-let arztcloudRegEx = new RegExp('arztcloud\.com');
 
 /**
  * Create the clients main window.
@@ -45,7 +44,7 @@ function createMainWindow(title, baseUrl, exitUrl) {
 function createSecondaryWindow(parentWindow, url, exitUrl) {
   let win = new BrowserWindow({
     webPreferences: {
-      nodeIntegration: arztcloudRegEx.test(url)
+      nodeIntegration: false
     }
   });
   openWindowIds.push(win.id);
