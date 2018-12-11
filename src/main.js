@@ -4,6 +4,7 @@ const {app, session, dialog} = require('electron');
 const {autoUpdater} = require('./autoUpdater');
 const {createMainWindow} = require('./mainWindow');
 
+require('./autoStart');
 require('./contextMenu');
 
 if (process.platform === 'darwin') {
