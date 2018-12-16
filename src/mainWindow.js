@@ -17,7 +17,8 @@ function createMainWindow(title, baseUrl, exitUrl) {
     webPreferences: {
       devTools: true,
       nodeIntegration: false
-    }
+    },
+    show: false
   });
 
   mainWindow.setSize(1024, 720);
@@ -168,4 +169,40 @@ function addCloseConfirmationHandler(window) {
   });
 }
 
+/**
+ * Changes the tray icon to red if the internet connection is lost.
+ *
+ * @param window
+ * @param tray
+ * @param trayImage
+ *
+ * @link https://github.com/electron/electron/issues/1236#issuecomment-249187945
+ */
+function listenToInternetConnectionLoss(window, tray, trayImage) {
+  window.webContents.on('did-fail-load', (event, errorCode, errorDescription, validatedURL, isMainFrame) => {
+    if (errorDescription === 'ERR_INTERNET_DISCONNECTED') {
+      console.log('Disconnected from internet.');
+      tray.setImage(trayImage);
+    }
+  });
+}
+
+/**
+ * Returns all currently registered windows.
+ */
+function getAllWindows()
+{
+  let windows = [];
+
+  openWindowIds.forEach(function (windowId) {
+    let aWindow = BrowserWindow.fromId(windowId);
+    if (aWindow) {
+      windows.push(aWindow);
+    }
+  });
+
+  return windows;
+}
+
 module.exports.createMainWindow = createMainWindow;
+module.exports.getAllWindows = getAllWindows;

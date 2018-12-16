@@ -1,11 +1,22 @@
 var {webApp} = require('../config/webApp');
 
-const {app, session, dialog} = require('electron');
+const {app, session, dialog, Tray, Menu} = require('electron');
 const {autoUpdater} = require('./autoUpdater');
-const {createMainWindow} = require('./mainWindow');
+const {createMainWindow, getAllWindows} = require('./mainWindow');
 
 require('./autoStart');
 require('./contextMenu');
+
+app.commandLine.appendSwitch('ignore-certificate-errors', 'true');
+
+let imageFolder = __dirname + '/../assets/img';
+let trayImage;
+
+if (process.platform === 'darwin') {
+    trayImage = imageFolder + '/tray/tray_mac.png';
+} else if (platform == 'win32') {
+    trayImage = imageFolder + '/tray/tray_win.ico';
+}
 
 if (process.platform === 'darwin') {
   autoUpdater.on('update-available', (info) => {
@@ -26,19 +37,50 @@ if (process.platform === 'darwin') {
   });
 }
 
-let mainWindow;
+var mainWindow;
 
 app.on('ready', function() {
-  // make sure the data is cleared in case the app wasn't quit properly last time
-  session.defaultSession.clearStorageData();
 	mainWindow = createMainWindow(webApp.title, webApp.baseUrl, webApp.exitUrl);
   autoUpdater.checkForUpdatesAndNotify();
+
+  const tray = new Tray(trayImage);
+  let contextMenu = Menu.buildFromTemplate([]);
+  tray.setToolTip('This is my application.');
+  tray.on('click', () => {
+    updateWindowVisibility()
+  });
 });
+
+/**
+ * Changes the visibility of the windows according to the current visibility
+ * of the main window.
+ */
+function updateWindowVisibility() {
+  let windows = getAllWindows();
+  console.log(windows);
+  if (mainWindow.isVisible()) {
+    windows.forEach((aWindow) => {
+      aWindow.hide();
+    });
+  } else {
+    windows.forEach((aWindow) => {
+      aWindow.show();
+    });
+  }
+}
 
 app.on('window-all-closed', () => {
   app.quit();
 });
 
 app.on('quit', function() {
-  session.defaultSession.clearStorageData();
+  let cookies = mainWindow.webContents.session.cookies.get({'url': webApp.baseUrl, 'name': 'auto_login'}, (error, cookies) => {
+    console.log('Cookies'); // @TODO auch die anderen Fenster prüfen -> bei logout aus anderem Fenster oder alle Fenster ohne beenden schließen lassen?!?!?!?!?!
+    console.log(cookies);
+    console.log(cookies.length);
+    if (cookies.length == 0) {
+      // clear session
+      session.defaultSession.clearStorageData();
+    }
+  });
 });
