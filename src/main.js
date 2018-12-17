@@ -2,9 +2,13 @@ var {webApp} = require('../config/webApp');
 
 const {app, session, dialog} = require('electron');
 const {autoUpdater} = require('./autoUpdater');
-const {createMainWindow} = require('./mainWindow');
+const {createMainWindow, getAllWindows, updateWindowVisibility} = require('./mainWindow');
 
+require('./autoStart');
 require('./contextMenu');
+
+// https://github.com/electron/electron/issues/10864#issuecomment-346229090
+app.setAppUserModelId("com.mhq.arztcloud.desktopclient");
 
 if (process.platform === 'darwin') {
   autoUpdater.on('update-available', (info) => {
@@ -25,13 +29,24 @@ if (process.platform === 'darwin') {
   });
 }
 
-let mainWindow;
+var mainWindow;
 
 app.on('ready', function() {
-  // make sure the data is cleared in case the app wasn't quit properly last time
-  session.defaultSession.clearStorageData();
-	mainWindow = createMainWindow(webApp.title, webApp.baseUrl, webApp.exitUrl);
+  // @TODO reset All if there is no auto login
+  const {createTray, listenToWindowStatus} = require('./tray');
+  const tray = createTray();
+
+	mainWindow = createMainWindow(webApp.title, webApp.exitUrl, function (aWindow) {
+    listenToWindowStatus(tray, aWindow, {'url': webApp.baseUrl, 'name': 'mhqauth'});
+  });
+  mayResetLogin(mainWindow);
+  mainWindow.loadURL(webApp.baseUrl);
   autoUpdater.checkForUpdatesAndNotify();
+  require('./mainMenu');
+
+  tray.on('click', () => {
+    updateWindowVisibility()
+  });
 });
 
 app.on('window-all-closed', () => {
@@ -39,5 +54,16 @@ app.on('window-all-closed', () => {
 });
 
 app.on('quit', function() {
-  session.defaultSession.clearStorageData();
+  mayResetLogin(mainWindow);
 });
+
+/**
+ * @param aWindow
+ */
+function mayResetLogin(aWindow) {
+  aWindow.webContents.session.cookies.get({'url': webApp.baseUrl, 'name': 'auto_login'}, (error, cookies) => {
+    if (cookies.length == 0) {
+      session.defaultSession.clearStorageData();
+    }
+  });
+}

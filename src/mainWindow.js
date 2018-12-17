@@ -1,4 +1,5 @@
 const {BrowserWindow, dialog, session, app} = require('electron');
+const {listenToWindowStatus} = require('./tray');
 
 let openWindowIds = [];
 let offset = 50;
@@ -8,24 +9,26 @@ let offset = 50;
  * If the main window is closed the client'll be closed, too.
  *
  * @param {string} title
- * @param {string} baseUrl
  * @param {string} exitUrl
+ * @param closure  windowCallback
  */
-function createMainWindow(title, baseUrl, exitUrl) {
+function createMainWindow(title, exitUrl, windowCallback) {
   let mainWindow = new BrowserWindow({
     title: title,
     webPreferences: {
       devTools: true,
       nodeIntegration: false
-    }
+    },
+    show: false,
+    backgroundColor: '#EEEEEE'
   });
 
   mainWindow.setSize(1024, 720);
   mainWindow.center();
-  mainWindow.loadURL(baseUrl);
 
-  listenToNewWindowToCreateSecondaryWindow(mainWindow, exitUrl);
+  listenToNewWindowToCreateSecondaryWindow(mainWindow, exitUrl, windowCallback);
   listenToLogout(mainWindow, exitUrl);
+  windowCallback(mainWindow);
 
   addCloseConfirmationHandler(mainWindow);
 
@@ -38,10 +41,11 @@ function createMainWindow(title, baseUrl, exitUrl) {
  * Create a window that belongs to the main window.
  *
  * @param {BrowserWindos} parentWindow
- * @param {string}        baseUrl
+ * @param {string}        url
  * @param {string}        exitUrl
+ * @param closure         windowCallback
  */
-function createSecondaryWindow(parentWindow, url, exitUrl) {
+function createSecondaryWindow(parentWindow, url, exitUrl, windowCallback) {
   let win = new BrowserWindow({
     webPreferences: {
       nodeIntegration: false
@@ -55,9 +59,10 @@ function createSecondaryWindow(parentWindow, url, exitUrl) {
   win.setSize(parentSize[0] - 2 * offset, parentSize[1] - 2 * offset);
   win.loadURL(url);
 
-  listenToNewWindowToCreateSecondaryWindow(win, exitUrl);
+  listenToNewWindowToCreateSecondaryWindow(win, exitUrl, windowCallback);
   listenToCloseToUnregisterOpenWindow(win);
   listenToLogout(win, exitUrl);
+  windowCallback(win);
 }
 
 /**
@@ -66,11 +71,12 @@ function createSecondaryWindow(parentWindow, url, exitUrl) {
  *
  * @param {BrowserWindow} window
  * @param {string}        exitUrl
+ * @param closure         windowCallback
  */
-function listenToNewWindowToCreateSecondaryWindow(window, exitUrl) {
+function listenToNewWindowToCreateSecondaryWindow(window, exitUrl, windowCallback) {
   window.webContents.on('new-window', function(e, url) {
     e.preventDefault();
-    createSecondaryWindow(window, url, exitUrl);
+    createSecondaryWindow(window, url, exitUrl, windowCallback);
   });
 }
 
@@ -168,4 +174,41 @@ function addCloseConfirmationHandler(window) {
   });
 }
 
+/**
+ * Returns all currently registered windows.
+ */
+function getAllWindows()
+{
+  let windows = [];
+
+  openWindowIds.forEach(function (windowId) {
+    let aWindow = BrowserWindow.fromId(windowId);
+    if (aWindow) {
+      windows.push(aWindow);
+    }
+  });
+
+  return windows;
+}
+
+/**
+ * Changes the visibility of the windows according to the current visibility
+ * of the main window.
+ */
+function updateWindowVisibility() {
+  let windows = getAllWindows();
+
+  if (windows[0].isVisible()) {
+    windows.forEach((aWindow) => {
+      aWindow.hide();
+    });
+  } else {
+    windows.forEach((aWindow) => {
+      aWindow.show();
+    });
+  }
+}
+
 module.exports.createMainWindow = createMainWindow;
+module.exports.getAllWindows = getAllWindows;
+module.exports.updateWindowVisibility = updateWindowVisibility;

@@ -29,7 +29,8 @@
     "packElevateHelper": true,
     "perMachine": true,
     "guid": true,
-    "createDesktopShortcut": true,
-    "createStartMenuShortcut": true
+    "createDesktopShortcut": false,
+    "createStartMenuShortcut": true,
+    "include": "nsis/installer.nsh",
   }
 }
