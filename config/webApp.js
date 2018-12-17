@@ -7,8 +7,8 @@
 
 var webApp = {
   title: 'arztcloud',
-  baseUrl: 'http://arztcloud.app/',
-  exitUrl: 'http://arztcloud.app/pages/disp/auf_wiedersehen',
+  baseUrl: 'https://dev.arztcloud.com/',
+  exitUrl: 'https://dev.arztcloud.com/pages/disp/auf_wiedersehen',
   macUpdateUrlPattern: 'https://github.com/mhq-services/arztcloud-desktop-client/releases/download/v__releaseName__/arztcloud-desktop-client-__releaseName__.dmg'
 };
 
