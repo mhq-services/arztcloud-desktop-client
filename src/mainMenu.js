@@ -1,5 +1,6 @@
 const {app, Menu} = require('electron')
 
+// https://electronjs.org/docs/api/menu#examples
 const template = [
   {
     label: 'Edit',
@@ -20,6 +21,7 @@ const template = [
     submenu: [
       {role: 'reload'},
       {role: 'forcereload'},
+      {role: 'toggledevtools'},
       {type: 'separator'},
       {role: 'resetzoom'},
       {role: 'zoomin'},

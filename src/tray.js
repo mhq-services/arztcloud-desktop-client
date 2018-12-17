@@ -1,6 +1,6 @@
 const {Tray, Menu} = require('electron');
 
-const imageFolder = __dirname + '/../assets/img/';
+const imageFolder = __dirname + '/assets/img/';
 
 let iconDefault;
 

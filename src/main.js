@@ -7,7 +7,8 @@ const {createMainWindow, getAllWindows, updateWindowVisibility} = require('./mai
 require('./autoStart');
 require('./contextMenu');
 
-app.commandLine.appendSwitch('ignore-certificate-errors', 'true');
+// https://github.com/electron/electron/issues/10864#issuecomment-346229090
+app.setAppUserModelId("com.mhq.arztcloud.desktopclient");
 
 if (process.platform === 'darwin') {
   autoUpdater.on('update-available', (info) => {
@@ -35,9 +36,11 @@ app.on('ready', function() {
   const {createTray, listenToWindowStatus} = require('./tray');
   const tray = createTray();
 
-	mainWindow = createMainWindow(webApp.title, webApp.baseUrl, webApp.exitUrl, function (aWindow) {
+	mainWindow = createMainWindow(webApp.title, webApp.exitUrl, function (aWindow) {
     listenToWindowStatus(tray, aWindow, {'url': webApp.baseUrl, 'name': 'mhqauth'});
   });
+  mayResetLogin(mainWindow);
+  mainWindow.loadURL(webApp.baseUrl);
   autoUpdater.checkForUpdatesAndNotify();
   require('./mainMenu');
 
@@ -51,14 +54,15 @@ app.on('window-all-closed', () => {
 });
 
 app.on('quit', function() {
-  mayResetAll(mainWindow);
+  mayResetLogin(mainWindow);
 });
 
-function mayResetAll(aWindow) {
-  let cookies = aWindow.webContents.session.cookies.get({'url': webApp.baseUrl, 'name': 'auto_login'}, (error, cookies) => {
-    // @TODO auch die anderen Fenster prüfen -> bei logout aus anderem Fenster oder alle Fenster ohne beenden schließen lassen!
+/**
+ * @param aWindow
+ */
+function mayResetLogin(aWindow) {
+  aWindow.webContents.session.cookies.get({'url': webApp.baseUrl, 'name': 'auto_login'}, (error, cookies) => {
     if (cookies.length == 0) {
-      // clear session
       session.defaultSession.clearStorageData();
     }
   });

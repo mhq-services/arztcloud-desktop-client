@@ -9,11 +9,10 @@ let offset = 50;
  * If the main window is closed the client'll be closed, too.
  *
  * @param {string} title
- * @param {string} baseUrl
  * @param {string} exitUrl
  * @param closure  windowCallback
  */
-function createMainWindow(title, baseUrl, exitUrl, windowCallback) {
+function createMainWindow(title, exitUrl, windowCallback) {
   let mainWindow = new BrowserWindow({
     title: title,
     webPreferences: {
@@ -26,7 +25,6 @@ function createMainWindow(title, baseUrl, exitUrl, windowCallback) {
 
   mainWindow.setSize(1024, 720);
   mainWindow.center();
-  mainWindow.loadURL(baseUrl);
 
   listenToNewWindowToCreateSecondaryWindow(mainWindow, exitUrl, windowCallback);
   listenToLogout(mainWindow, exitUrl);
@@ -43,7 +41,7 @@ function createMainWindow(title, baseUrl, exitUrl, windowCallback) {
  * Create a window that belongs to the main window.
  *
  * @param {BrowserWindos} parentWindow
- * @param {string}        baseUrl
+ * @param {string}        url
  * @param {string}        exitUrl
  * @param closure         windowCallback
  */
