@@ -15,12 +15,6 @@ require('electron-context-menu')({
               browserWindow.webContents.goBack();
             }
           }
-      },
-      {
-          label: 'Seite neu laden',
-          click: function (menuItem, browserWindow, event) {
-            browserWindow.webContents.reload();
-          }
       }
     ],
 });
