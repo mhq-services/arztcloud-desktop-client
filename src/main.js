@@ -2,13 +2,38 @@ var {webApp} = require('../config/webApp');
 
 const {app, session, dialog} = require('electron');
 const {autoUpdater} = require('./autoUpdater');
-const {createMainWindow, getAllWindows, updateWindowVisibility} = require('./mainWindow');
+const {createMainWindow, getAllWindows, toggleWindowVisibility} = require('./mainWindow');
 
 require('./autoStart');
 require('./contextMenu');
 
 // https://github.com/electron/electron/issues/10864#issuecomment-346229090
 app.setAppUserModelId("com.mhq.arztcloud.desktopclient");
+
+ //@TODO REMOVE
+app.commandLine.appendSwitch('ignore-certificate-errors', 'true');
+
+var mainWindow;
+
+/* ensure that only one instance is running
+ * https://electronjs.org/docs/api/app#apprequestsingleinstancelock
+ */
+const gotTheLock = app.requestSingleInstanceLock();
+
+if (!gotTheLock) {
+  app.quit();
+  return;
+}
+
+app.on('second-instance', (event, commandLine, workingDirectory) => {
+  // Someone tried to run a second instance, we should focus our window.
+  if (mainWindow) {
+    if (!mainWindow.isVisible()) {
+      toggleWindowVisibility();
+    }
+    mainWindow.focus();
+  }
+});
 
 if (process.platform === 'darwin') {
   autoUpdater.on('update-available', (info) => {
@@ -45,7 +70,7 @@ app.on('ready', function() {
   require('./mainMenu');
 
   tray.on('click', () => {
-    updateWindowVisibility()
+    toggleWindowVisibility()
   });
 });
 

@@ -195,7 +195,7 @@ function getAllWindows()
  * Changes the visibility of the windows according to the current visibility
  * of the main window.
  */
-function updateWindowVisibility() {
+function toggleWindowVisibility() {
   let windows = getAllWindows();
 
   if (windows[0].isVisible()) {
@@ -211,4 +211,4 @@ function updateWindowVisibility() {
 
 module.exports.createMainWindow = createMainWindow;
 module.exports.getAllWindows = getAllWindows;
-module.exports.updateWindowVisibility = updateWindowVisibility;
+module.exports.toggleWindowVisibility = toggleWindowVisibility;
