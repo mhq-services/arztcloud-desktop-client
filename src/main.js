@@ -76,7 +76,6 @@ app.on('ready', function() {
   mayResetLogin(mainWindow);
   mainWindow.loadURL(webApp.baseUrl);
   autoUpdater.checkForUpdatesAndNotify();
-  require('./mainMenu');
 
   tray.on('click', () => {
     toggleWindowVisibility()
