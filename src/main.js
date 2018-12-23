@@ -54,14 +54,23 @@ if (process.platform === 'darwin') {
   });
 }
 
-var mainWindow;
-
 app.on('ready', function() {
-  // @TODO reset All if there is no auto login
+  session.defaultSession.clearCache(() => {});
+  // @TODO reset All if there is no auto login on start up
   const {createTray, listenToWindowStatus} = require('./tray');
   const tray = createTray();
 
+  let subDomainRegEx = new RegExp('.+.arztcloud\..+');
+
 	mainWindow = createMainWindow(webApp.title, webApp.exitUrl, function (aWindow) {
+    // deactivate notifications for subdomains https://stackoverflow.com/a/43556228
+    aWindow.webContents.once('did-navigate', (event, url) => {
+      if (subDomainRegEx.test(url)) {
+        aWindow.webContents.once('dom-ready', () => {
+          aWindow.webContents.executeJavaScript('delete window.Notification');
+        });
+      }
+    });
     listenToWindowStatus(tray, aWindow, {'url': webApp.baseUrl, 'name': 'mhqauth'});
   });
   mayResetLogin(mainWindow);
