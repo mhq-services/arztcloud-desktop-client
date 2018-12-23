@@ -28,6 +28,7 @@ function createMainWindow(title, exitUrl, windowCallback) {
 
   listenToNewWindowToCreateSecondaryWindow(mainWindow, exitUrl, windowCallback);
   listenToLogout(mainWindow, exitUrl);
+  listenToAlreadyOpenWindows(mainWindow);
   windowCallback(mainWindow);
 
   addCloseConfirmationHandler(mainWindow);
@@ -61,7 +62,7 @@ function createSecondaryWindow(parentWindow, url, exitUrl, windowCallback) {
 
   listenToNewWindowToCreateSecondaryWindow(win, exitUrl, windowCallback);
   listenToCloseToUnregisterOpenWindow(win);
-  listenToLogout(win, exitUrl);
+  listenToAlreadyOpenWindows(win);
   windowCallback(win);
 }
 
@@ -76,8 +77,47 @@ function createSecondaryWindow(parentWindow, url, exitUrl, windowCallback) {
 function listenToNewWindowToCreateSecondaryWindow(window, exitUrl, windowCallback) {
   window.webContents.on('new-window', function(e, url) {
     e.preventDefault();
-    createSecondaryWindow(window, url, exitUrl, windowCallback);
+    if (!mayFocusExistingWindow(window.id, url)) {
+      createSecondaryWindow(window, url, exitUrl, windowCallback);
+    }
   });
+}
+
+/**
+ *
+ * @param {BrowserWindow} aWindow
+ */
+function listenToAlreadyOpenWindows(aWindow) {
+  aWindow.webContents.on('will-navigate', function (event, url) {
+    if (mayFocusExistingWindow(aWindow.id, url)) {
+      event.preventDefault();
+    }
+  });
+}
+
+/**
+ * @param {int}    callingWindowId
+ * @param {string} url
+ *
+ * @return boolean
+ */
+function mayFocusExistingWindow(callingWindowId, url) {
+  for (let i = 0; i < openWindowIds.length; i++) {
+    let openWindow = BrowserWindow.fromId(openWindowIds[i]);
+    if (openWindow.id == callingWindowId) {
+      continue;
+    }
+    if (openWindow.webContents.getURL() == url) {
+      if (!openWindow.isVisible()) {
+        openWindow.show();
+      }
+      openWindow.focus();
+
+      return true;
+    }
+  }
+
+  return false;
 }
 
 /**
@@ -109,7 +149,7 @@ function listenToLogout(window, exitUrl) {
     if (url == exitUrl) {
       let openIdsWithoutCurrent = openWindowIds;
       let currentWindowIndex = openIdsWithoutCurrent.indexOf(window.id);
-      let currentIsSecondary = currentWindowIndex > 0;
+
       openIdsWithoutCurrent.splice(currentWindowIndex, 1);
 
       openIdsWithoutCurrent.forEach(function (windowId) {
@@ -120,22 +160,10 @@ function listenToLogout(window, exitUrl) {
       });
       openWindowIds = [];
       session.defaultSession.clearStorageData();
-      if (currentIsSecondary) {
-        promoteToMainWindow(window);
-      }
+
       openWindowIds.push(window.id);
     }
   });
-}
-
-/**
- * Adds all necessary functionality to the window
- * to convert it to be the main window.
- *
- * @param {BrowserWindow} window
- */
-function promoteToMainWindow(window) {
-  addCloseConfirmationHandler(window);
 }
 
 /**
