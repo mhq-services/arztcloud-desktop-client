@@ -50,7 +50,8 @@ function createSecondaryWindow(parentWindow, url, exitUrl, windowCallback) {
   let win = new BrowserWindow({
     webPreferences: {
       nodeIntegration: false
-    }
+    },
+    show: parentWindow.isVisible()
   });
   openWindowIds.push(win.id);
 
