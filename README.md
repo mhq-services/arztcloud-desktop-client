@@ -9,6 +9,7 @@ The auto update with provider GitHub currently only [distinguishes between prere
 If the version name has a suffix e.g. "0.1.0-beta" it allows updates to pre-releases, if not is only updates to normal releases (see AutoUpdaters property "allowAutoupdate" in its  [API documentation](https://www.electron.build/auto-update#api)).
 
 ## Development
+
 ### Create releases
 #### Preparation
 On macOs: Install [wine](https://www.winehq.org/) to be able to create Windows .exe files.
@@ -22,4 +23,10 @@ export GH_TOKEN="EnterYourAccessToken"
 
 ```bash
 npm run publish
+```
+
+### Optional
+Ignore certificate errors for testing local
+```bash
+app.commandLine.appendSwitch('ignore-certificate-errors', 'true');
 ```

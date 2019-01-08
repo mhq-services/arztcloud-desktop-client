@@ -10,8 +10,6 @@ require('./contextMenu');
 // https://github.com/electron/electron/issues/10864#issuecomment-346229090
 app.setAppUserModelId("com.mhq.arztcloud.desktopclient");
 
- //@TODO REMOVE
-app.commandLine.appendSwitch('ignore-certificate-errors', 'true');
 
 var mainWindow;
 
@@ -71,7 +69,7 @@ app.on('ready', function() {
         });
       }
     });
-    listenToWindowStatus(tray, aWindow, {'url': webApp.baseUrl, 'name': 'mhqauth'});
+    listenToWindowStatus(tray, aWindow, {'url': webApp.baseUrl, 'name': 'incloud'});
   });
   mayResetLogin(mainWindow);
   mainWindow.loadURL(webApp.baseUrl);
