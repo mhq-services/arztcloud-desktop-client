@@ -19,6 +19,7 @@ function createMainWindow(title, exitUrl, windowCallback) {
       devTools: true,
       nodeIntegration: false
     },
+    autoHideMenuBar: true,
     show: false,
     backgroundColor: '#EEEEEE'
   });
@@ -51,6 +52,7 @@ function createSecondaryWindow(parentWindow, url, exitUrl, windowCallback) {
     webPreferences: {
       nodeIntegration: false
     },
+    autoHideMenuBar: true,
     show: parentWindow.isVisible()
   });
   openWindowIds.push(win.id);
