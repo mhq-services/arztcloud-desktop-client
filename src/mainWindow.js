@@ -129,10 +129,14 @@ function mayFocusExistingWindow(callingWindowId, url) {
  * @param {BrowserWindow} window
  */
 function listenToCloseToUnregisterOpenWindow(window) {
+  let id = window.id;
   window.webContents.on('close', function(e) {
-    windowIndex = openWindowIds.indexOf(window.id);
+    windowIndex = openWindowIds.indexOf(id);
     if (windowIndex > 0) { // not main window
-      openWindowIds.splice(openWindowIds.indexOf(window.id), 1);
+      let indexOfCurrent = openWindowIds.indexOf(id);
+      if (indexOfCurrent >= 0) {
+        openWindowIds.splice(indexOfCurrent, 1);
+      }
     }
   });
 }
@@ -146,12 +150,14 @@ function listenToCloseToUnregisterOpenWindow(window) {
  * @param {string}        exitUrl
  */
 function listenToLogout(window, exitUrl) {
+  let id = window.id;
   window.webContents.on('did-navigate', function (event, url) {
     if (url == exitUrl) {
       let openIdsWithoutCurrent = openWindowIds;
-      let currentWindowIndex = openIdsWithoutCurrent.indexOf(window.id);
-
-      openIdsWithoutCurrent.splice(currentWindowIndex, 1);
+      let currentWindowIndex = openIdsWithoutCurrent.indexOf(id);
+      if (currentWindowIndex >= 0) {
+        openIdsWithoutCurrent.splice(currentWindowIndex, 1);
+      }
 
       openIdsWithoutCurrent.forEach(function (windowId) {
         let openWindow = BrowserWindow.fromId(windowId);
@@ -162,7 +168,7 @@ function listenToLogout(window, exitUrl) {
       openWindowIds = [];
       session.defaultSession.clearStorageData();
 
-      openWindowIds.push(window.id);
+      openWindowIds.push(id);
     }
   });
 }
@@ -174,6 +180,7 @@ function listenToLogout(window, exitUrl) {
  * @param {BrowserWindow} window
  */
 function addCloseConfirmationHandler(window) {
+  let id = window.id;
   window.on('close', function (event) {
     let result = dialog.showMessageBox({
       type: 'question',
@@ -188,8 +195,10 @@ function addCloseConfirmationHandler(window) {
     } else {
       // @TODO REFAC
       let openIdsWithoutCurrent = openWindowIds;
-      let currentWindowIndex = openIdsWithoutCurrent.indexOf(window.id);
-      openIdsWithoutCurrent.splice(currentWindowIndex, 1);
+      let currentWindowIndex = openIdsWithoutCurrent.indexOf(id);
+      if (currentWindowIndex >= 0) {
+        openIdsWithoutCurrent.splice(currentWindowIndex, 1);
+      }
 
       openIdsWithoutCurrent.forEach(function (windowId) {
         let openWindow = BrowserWindow.fromId(windowId);
@@ -198,7 +207,6 @@ function addCloseConfirmationHandler(window) {
         }
       });
       openWindowIds = [];
-      openWindowIds.push(window.id);
     }
   });
 }
