@@ -58,12 +58,13 @@ app.on('ready', function() {
   const {createTray, listenToWindowStatus} = require('./tray');
   const tray = createTray();
 
-  let subDomainRegEx = new RegExp('.+.arztcloud\..+');
+  let subDomainRegEx = new RegExp(webApp.subdomainPattern);
 
 	mainWindow = createMainWindow(webApp.title, webApp.exitUrl, function (aWindow) {
-    // deactivate notifications for subdomains https://stackoverflow.com/a/43556228
+    // deactivate notifications for subdomains
     aWindow.webContents.once('did-navigate', (event, url) => {
       if (subDomainRegEx.test(url)) {
+        // https://stackoverflow.com/a/43556228
         aWindow.webContents.once('dom-ready', () => {
           aWindow.webContents.executeJavaScript('delete window.Notification');
         });

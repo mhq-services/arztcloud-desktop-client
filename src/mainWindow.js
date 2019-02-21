@@ -64,6 +64,7 @@ function createSecondaryWindow(parentWindow, url, exitUrl, windowCallback) {
   win.loadURL(url);
 
   listenToNewWindowToCreateSecondaryWindow(win, exitUrl, windowCallback);
+  listenToLogout(win, exitUrl);
   listenToCloseToUnregisterOpenWindow(win);
   listenToAlreadyOpenWindows(win);
   windowCallback(win);
