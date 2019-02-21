@@ -156,18 +156,23 @@ function listenToLogout(window, exitUrl) {
   let id = window.id;
   window.webContents.on('did-navigate', function (event, url) {
     if (url == exitUrl) {
-      let openIdsWithoutCurrent = openWindowIds;
-      let currentWindowIndex = openIdsWithoutCurrent.indexOf(id);
-      if (currentWindowIndex >= 0) {
-        openIdsWithoutCurrent.splice(currentWindowIndex, 1);
+      let currentWindowIndex = openWindowIds.indexOf(id);
+      if (currentWindowIndex > 0) {
+        // logout on secondary window -> focus on mainWindow and open exitUrl there
+        let mainWindow = BrowserWindow.fromId(openWindowIds[0]);
+        mainWindow.loadURL(exitUrl);
+        mainWindow.show();
+        return;
       }
 
-      openIdsWithoutCurrent.forEach(function (windowId) {
-        let openWindow = BrowserWindow.fromId(windowId);
+      for (let i = 1; i < openWindowIds.length; i++) {
+        let windowId = openWindowIds[i];
+        let openWindow = BrowserWindow.fromId(openWindowIds[i]);
         if (openWindow) {
           openWindow.destroy();
         }
-      });
+      }
+
       openWindowIds = [];
       session.defaultSession.clearStorageData();
 
