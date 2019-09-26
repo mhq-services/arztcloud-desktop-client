@@ -33,25 +33,6 @@ app.on('second-instance', (event, commandLine, workingDirectory) => {
   }
 });
 
-if (process.platform === 'darwin') {
-  autoUpdater.on('update-available', (info) => {
-    // we currently don't support auto update for macOs, so don't trigger any download
-    let result = dialog.showMessageBox({
-      type: 'info',
-      title: 'Neue Updates verfügbar.',
-      message: 'Downloadseite für aktuelle Version öffnen?',
-      buttons: ['Ja', 'Nein']
-    });
-
-    if (result === 0) {
-      // workaround, since autoUpdater.getFeedURL only returns the message "Deprecated. Do not use it."
-      let updateUrl = webApp.macUpdateUrlPattern.replace(/__releaseName__/g, info.releaseName);
-      require('electron').shell.openExternal(updateUrl);
-      app.quit();
-    }
-  });
-}
-
 app.on('ready', function() {
   session.defaultSession.clearCache(() => {});
   // @TODO reset All if there is no auto login on start up

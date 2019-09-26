@@ -1,7 +1,7 @@
 {
   "name": "arztcloud-desktop-client",
   "productName": "arztcloud Desktop Client",
-  "version": "0.4.1-develop",
+  "version": "0.4.2-develop",
   "main": "src/main.js",
   "description": "Desktop Client für arztcloud.com",
   "author": "MHQ - Services GmbH",
@@ -16,6 +16,6 @@
   "dependencies": {
     "electron-context-menu": "^0.15.0",
     "electron-log": "^3.0.8",
-    "electron-updater-bin": "git+https://github.com/WesterosCraftCode/electron-updater-bin.git"
+    "electron-updater": "^4.1.2"
   }
 }
