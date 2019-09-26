@@ -1,5 +1,5 @@
 const {autoUpdater} = require("electron-updater");
-const {app, dialog} = require('electron');
+const {app, dialog, BrowserWindow} = require('electron');
 const log = require('electron-log');
 
 let updater;
@@ -55,6 +55,10 @@ autoUpdater.on('update-downloaded', () => {
     message: 'Updates wurden heruntergeladen, der Client wird nun für die Installation geschlossen ...'
   }, () => {
     setImmediate(function () {
+      // remove close confimation that blocks update installation
+      BrowserWindow.getAllWindows().forEach(function (bWindow) {
+        bWindow.removeAllListeners('close');
+      });
       app.removeAllListeners('window-all-closed');
       autoUpdater.quitAndInstall();
     });

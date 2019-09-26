@@ -1,9 +1,5 @@
 # Official desktop client for arztcloud.com.
 
-## AutoUpdater
-The auto update implementation is based on https://github.com/iffy/electron-updater-example tag 0.7.1
-with a [temporary fix](https://github.com/electron-userland/electron-builder/issues/3367#issuecomment-429696868) due to conflicts with the current electron-updater version.
-
 ### Channels
 The auto update with provider GitHub currently only [distinguishes between prerelease version and normal release](https://github.com/electron-userland/electron-builder/issues/1722).
 If the version name has a suffix e.g. "0.1.0-beta" it allows updates to pre-releases, if not is only updates to normal releases (see AutoUpdaters property "allowAutoupdate" in its  [API documentation](https://www.electron.build/auto-update#api)).
