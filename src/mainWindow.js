@@ -190,32 +190,33 @@ function listenToLogout(window, exitUrl) {
 function addCloseConfirmationHandler(window) {
   let id = window.id;
   window.on('close', function (event) {
-    let result = dialog.showMessageBox({
+    dialog.showMessageBox({
       type: 'question',
       title: 'Beenden',
       message: 'Möchtest du den arztcloud Desktop Client wirklich beenden?',
       buttons: ['Ja', 'Nein']
-    });
-
-    if (result === 1) {
-      event.preventDefault();
-      event.returnValue = false;
-    } else {
-      // @TODO REFAC
-      let openIdsWithoutCurrent = openWindowIds;
-      let currentWindowIndex = openIdsWithoutCurrent.indexOf(id);
-      if (currentWindowIndex >= 0) {
-        openIdsWithoutCurrent.splice(currentWindowIndex, 1);
-      }
-
-      openIdsWithoutCurrent.forEach(function (windowId) {
-        let openWindow = BrowserWindow.fromId(windowId);
-        if (openWindow) {
-          openWindow.destroy();
+    }).then(function (result) {
+      if (result.response === 0) {
+        // @TODO REFAC
+        let openIdsWithoutCurrent = openWindowIds;
+        let currentWindowIndex = openIdsWithoutCurrent.indexOf(id);
+        if (currentWindowIndex >= 0) {
+          openIdsWithoutCurrent.splice(currentWindowIndex, 1);
         }
-      });
-      openWindowIds = [];
-    }
+
+        openIdsWithoutCurrent.forEach(function (windowId) {
+          let openWindow = BrowserWindow.fromId(windowId);
+          if (openWindow) {
+            openWindow.destroy();
+          }
+        });
+        openWindowIds = [];
+
+      } else {
+        event.preventDefault();
+        event.returnValue = false;
+      }
+    });
   });
 }
 
