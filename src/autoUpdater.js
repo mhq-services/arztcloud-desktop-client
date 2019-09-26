@@ -1,3 +1,5 @@
+var {webApp} = require('../config/webApp');
+
 const {autoUpdater} = require("electron-updater");
 const {app, dialog, BrowserWindow} = require('electron');
 const log = require('electron-log');
@@ -36,7 +38,7 @@ if (process.platform === 'darwin') {
     dialog.showMessageBox({
       type: 'info',
       title: 'Neue Updates verfügbar.',
-      message: 'Eine neue Version ist verfügbar, möchtest du den Client jetzt aktualisieren?',
+      message: 'Eine neue Version ist verfügbar, möchtest du die Updates jetzt herunterladen?',
       buttons: ['Ja', 'Nein']
     }, (buttonIndex) => {
       if (buttonIndex === 0) {
