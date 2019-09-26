@@ -190,11 +190,17 @@ function listenToLogout(window, exitUrl) {
 function addCloseConfirmationHandler(window) {
   let id = window.id;
   window.on('close', function (event) {
+    if (openWindowIds.length === 0) {
+      return;
+    }
+    event.preventDefault();
+
     dialog.showMessageBox({
       type: 'question',
       title: 'Beenden',
       message: 'Möchtest du den arztcloud Desktop Client wirklich beenden?',
-      buttons: ['Ja', 'Nein']
+      buttons: ['Ja', 'Nein'],
+      cancelId: 1
     }).then(function (result) {
       if (result.response === 0) {
         // @TODO REFAC
@@ -211,9 +217,10 @@ function addCloseConfirmationHandler(window) {
           }
         });
         openWindowIds = [];
+        // main window will be destroyed on app quit
+        window.close();
 
       } else {
-        event.preventDefault();
         event.returnValue = false;
       }
     });
