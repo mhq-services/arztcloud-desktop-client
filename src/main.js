@@ -75,9 +75,13 @@ app.on('quit', function() {
  * @param aWindow
  */
 function mayResetLogin(aWindow) {
-  aWindow.webContents.session.cookies.get({'url': webApp.baseUrl, 'name': 'auto_login'}, (error, cookies) => {
+  aWindow.webContents.session.cookies.get({'url': webApp.baseUrl, 'name': 'auto_login'})
+  .then((cookies) => {
+    console.log(cookies);
     if (cookies.length == 0) {
       session.defaultSession.clearStorageData();
     }
+  }).catch((error) => {
+    console.log('mayResetLogin get cookies error', error);
   });
 }

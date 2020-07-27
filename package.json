@@ -10,12 +10,12 @@
     "publish": "rm -r dist && electron-builder build --mac --win -p always"
   },
   "devDependencies": {
-    "electron": "^6.0.10",
-    "electron-builder": "^21.2.0"
+    "electron": "^9.1.1",
+    "electron-builder": "^22.7.0"
   },
   "dependencies": {
-    "electron-context-menu": "^0.15.0",
-    "electron-log": "^3.0.8",
-    "electron-updater": "^4.1.2"
+    "electron-context-menu": "^2.2.0",
+    "electron-log": "^4.2.2",
+    "electron-updater": "^4.3.1"
   }
 }

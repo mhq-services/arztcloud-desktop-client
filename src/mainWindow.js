@@ -17,7 +17,8 @@ function createMainWindow(title, exitUrl, windowCallback) {
     title: title,
     webPreferences: {
       devTools: true,
-      nodeIntegration: false
+      nodeIntegration: false,
+      plugins: true,
     },
     autoHideMenuBar: true,
     show: false,
@@ -50,7 +51,8 @@ function createMainWindow(title, exitUrl, windowCallback) {
 function createSecondaryWindow(parentWindow, url, exitUrl, windowCallback) {
   let win = new BrowserWindow({
     webPreferences: {
-      nodeIntegration: false
+      nodeIntegration: false,
+      plugins: true
     },
     autoHideMenuBar: true,
     show: parentWindow.isVisible()

@@ -21,7 +21,7 @@ if (process.platform === 'darwin') {
     let result = dialog.showMessageBox({
       type: 'info',
       title: 'Neue Updates verfügbar.',
-      message: 'Downloadseite für aktuelle Version öffnen?',
+      message: 'Downloadseite für aktuelle Version (' + info.releaseName + ') öffnen?',
       buttons: ['Ja', 'Nein']
     }, (buttonIndex) => {
       if (buttonIndex === 0) {
