@@ -47,15 +47,16 @@ function listenToWindowStatus(tray, aWindow, loginCookieQuery) {
     }, 1000);
   });
   aWindow.webContents.on('did-finish-load', () => {
-    let cookies = aWindow.webContents.session.cookies.get(loginCookieQuery, (error, cookies) => {
-      if (cookies.length == 0) {
-        tray.setImage(iconLoggedOut);
-        tray.setToolTip(tooltipLoggedOut);
-      } else {
-        tray.setImage(iconLoggedIn);
-        tray.setToolTip(tooltipLoggedIn);
-      }
-    });
+    let cookies = aWindow.webContents.session.cookies.get(loginCookieQuery)
+      .then((cookies) => {
+        if (cookies.length == 0) {
+          tray.setImage(iconLoggedOut);
+          tray.setToolTip(tooltipLoggedOut);
+        } else {
+          tray.setImage(iconLoggedIn);
+          tray.setToolTip(tooltipLoggedIn);
+        }
+      });
   });
 }
 
