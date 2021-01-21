@@ -8,21 +8,18 @@
   ],
   "mac": {
     "category": "public.app-category.productivity",
-    "target": [
-      "zip",
-      "dmg"
-    ]
+    "target": ["zip", "dmg"]
   },
   "win": {
     "target": [
       {
         "target": "nsis",
-        "arch": [
-          "x64",
-          "ia32"
-        ]
+        "arch": ["x64", "ia32"]
       }
     ]
+  },
+  "linux": {
+    "category": "Network"
   },
   "nsis": {
     "oneClick": false,
@@ -31,6 +28,6 @@
     "guid": true,
     "createDesktopShortcut": true,
     "createStartMenuShortcut": true,
-    "include": "nsis/installer.nsh",
+    "include": "nsis/installer.nsh"
   }
 }
