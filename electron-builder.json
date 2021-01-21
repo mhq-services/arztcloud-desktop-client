@@ -19,7 +19,8 @@
     ]
   },
   "linux": {
-    "category": "Network"
+    "category": "Network",
+    "target": ["zip"]
   },
   "nsis": {
     "oneClick": false,
